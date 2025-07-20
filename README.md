@@ -1,12 +1,123 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 💼 Personal Portfolio Website
 
-Currently, two official plugins are available:
+A modern and responsive developer portfolio built using **React**, **Tailwind CSS**, and **Vite**. This site highlights your projects, skills, and contact details in a sleek, animated interface designed to impress.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ⚡ Fast bundling and dev experience with **Vite**
+- 💅 Beautiful and responsive UI using **Tailwind CSS**
+- 🎬 Smooth animations with **Framer Motion**
+- 🔀 Seamless page transitions via **React Router DOM**
+- 🧩 Clean and modular component structure
+- ☁️ Ready for deployment (Vercel config included)
+
+---
+
+## 📸 Preview
+
+<!-- Replace this image URL with a real screenshot -->
+![Portfolio Screenshot](https://via.placeholder.com/1000x500.png?text=Portfolio+Website)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React, Tailwind CSS, Framer Motion
+- **Routing:** React Router DOM
+- **Bundler:** Vite
+
+---
+
+## 📂 Project Structure
+
+```
+my-portfolio/
+├── public/
+├── src/
+│   ├── assets/          # Images and icons
+│   ├── components/      # Reusable UI components
+│   ├── constants/       # Skills and projects data
+│   ├── hoc/             # Higher-order components (e.g. SectionWrapper)
+│   ├── pages/           # Individual pages like About, Contact, etc.
+│   ├── utils/           # Motion/animation utilities
+│   ├── App.jsx
+│   └── main.jsx
+├── tailwind.config.js
+├── postcss.config.js
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+---
+
+## 🧪 Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/my-portfolio.git
+cd my-portfolio
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Run the Development Server
+
+```bash
+npm run dev
+```
+
+> App will be live at `http://localhost:5173`
+
+---
+
+## 🧱 Build for Production
+
+```bash
+npm run build
+```
+
+---
+
+## 🌐 Deployment
+
+You can easily deploy this project to platforms like:
+
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [GitHub Pages](https://pages.github.com/)
+
+> A `vercel.json` file is already included for smoother deployment on Vercel.
+
+---
+
+## 🙏 Acknowledgements
+
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [React Router](https://reactrouter.com/)
+
+---
+
+## 📬 Contact
+
+Feel free to connect or reach out:
+
+- 🌐 GitHub: [your-username](https://github.com/your-username)
+- 📧 Email: your-email@example.com
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. Feel free to use and modify it for personal or commercial purposes.
