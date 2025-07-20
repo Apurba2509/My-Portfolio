@@ -42,7 +42,7 @@ export const technologies = [
   },
   {
     name: "Tailwind CSS",
-    icon: "/src/assets/tailwind.png",
+    icon: "../src/assets/tailwind.png",
   },
   {
     name: "Express",
@@ -57,7 +57,7 @@ export const projects = [
     tags: [
       { name: "HTML", color: "text-blue-500"},
     ],
-    image: "/src/assets/todo.png",
+    image: "../src/assets/todo.png",
     source_code_link: "https://github.com/Apurba2509/to-do-list",
   },
   // Add more projects as needed
@@ -67,7 +67,7 @@ export const projects = [
     tags: [
       { name: "JS", color: "text-blue-500"},
     ],
-    image: "/src/assets/weather.png",
+    image: "../src/assets/weather.png",
     source_code_link: "https://github.com/Apurba2509/Weather",
   },
 ];
