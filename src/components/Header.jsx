@@ -12,7 +12,7 @@ const Header = () => {
         animate={{ opacity: 0.15 }}
         transition={{ duration: 1 }}
         style={{
-          backgroundImage: "url('/src/assets/back.jpg')",
+          backgroundImage: "url('/back.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "grayscale(80%) brightness(0.6) hue-rotate(230deg)",
