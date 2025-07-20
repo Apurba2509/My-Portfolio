@@ -1,0 +1,35 @@
+
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer utilities {
+  .padding {
+    @apply sm:px-16 px-6 sm:py-16 py-10;
+  }
+
+  .padding-x {
+    @apply sm:px-16 px-6;
+  }
+
+  .padding-y {
+    @apply sm:py-16 py-10;
+  }
+
+  .padding-l {
+    @apply sm:pl-16 pl-6;
+  }
+
+  .padding-r {
+    @apply sm:pr-16 pr-6;
+  }
+
+  .padding-t {
+    @apply sm:pt-16 pt-10;
+  }
+
+  .padding-b {
+    @apply sm:pb-16 pb-10;
+  }
+}
