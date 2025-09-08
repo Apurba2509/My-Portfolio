@@ -1,8 +1,11 @@
+// src/components/Projects.jsx
+
 import { motion } from "framer-motion";
 import { fadeIn, textVariant } from "../utils/motion";
 import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
 
+// ProjectCard component is already great, no changes needed here.
 const ProjectCard = ({
   index,
   name,
@@ -55,7 +58,8 @@ const Projects = () => {
   return (
     <>
       <motion.div variants={textVariant()}>
-        <h2 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]">
+        {/* CHANGE: Adjusted the base text size to be slightly smaller on mobile */}
+        <h2 className="text-white font-black text-3xl xs:text-4xl sm:text-5xl md:text-6xl">
           My Projects
         </h2>
         <p className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]">

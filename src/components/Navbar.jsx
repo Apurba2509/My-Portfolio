@@ -1,3 +1,6 @@
+// src/components/Navbar.jsx
+// NOTE: This file was already well-implemented and required no changes.
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
@@ -18,7 +21,7 @@ const MenuIcon = ({ isOpen }) => (
       strokeLinecap="round"
       variants={{
         closed: { d: "M2 6h20M2 12h20M2 18h20" },
-        open: { d: "M4 18L18 4M4 4l14 14" }
+        open: { d: "M4 18L18 4M4 4l14 14" },
       }}
       transition={{ duration: 0.3 }}
     />
@@ -51,18 +54,18 @@ const Navbar = () => {
   return (
     <nav className="w-full flex items-center py-5 fixed top-0 z-20 bg-primary px-6 sm:px-16">
       {/* Logo Section */}
-      <a 
+      <a
         href="/"
         onClick={(e) => {
           e.preventDefault();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0, behavior: "smooth" });
           setActive("");
         }}
         className="flex items-center gap-3 mr-auto group"
       >
-        <img 
-          src={logo} 
-          alt="logo" 
+        <img
+          src={logo}
+          alt="logo"
           className="w-10 h-10 object-cover rounded-full border-2 border-transparent group-hover:border-[#915EFF] p-0.5 transition-all duration-300"
         />
         <span className="text-white text-xl font-bold group-hover:text-[#915EFF] transition-colors duration-300">
@@ -82,7 +85,7 @@ const Navbar = () => {
               onClick={() => setActive(nav)}
             >
               {nav.charAt(0).toUpperCase() + nav.slice(1)}
-              <span 
+              <span
                 className={`absolute left-0 -bottom-1 h-0.5 bg-[#915EFF] transition-all duration-300 ${
                   active === nav ? "w-full" : "w-0 group-hover:w-full"
                 }`}
@@ -94,7 +97,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className="sm:hidden flex">
-        <button 
+        <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-white focus:outline-none"
           aria-label="Toggle menu"
@@ -104,36 +107,38 @@ const Navbar = () => {
 
         {/* Mobile Menu Dropdown */}
         {isOpen && (
-  <motion.div
-    initial={{ opacity: 0, y: -20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
-    transition={{ duration: 0.3 }}
-    className="fixed inset-0 bg-primary/95 backdrop-blur-sm z-10 pt-24 px-6"
-  >
-    <ul className="flex flex-col gap-6 h-full">
-      {["home", "about", "skills", "projects", "contact"].map((nav) => (
-        <li key={nav} className="border-b border-[#915EFF]/30 pb-2">
-          <a
-            href={`#${nav}`}
-            className={`text-2xl ${
-              active === nav ? "text-[#915EFF]" : "text-white"
-            } font-medium`}
-            onClick={() => {
-              setIsOpen(false);
-              setActive(nav);
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-primary/95 backdrop-blur-sm z-10 pt-24 px-6"
           >
-            {nav.charAt(0).toUpperCase() + nav.slice(1)}
-          </a>
-        </li>
-      ))}
-    </ul>
-    <div className="absolute bottom-10 left-0 right-0 text-center text-secondary text-sm">
-      Swipe up/down to navigate
-    </div>
-  </motion.div>
-)}
+            <ul className="flex flex-col gap-6 h-full">
+              {["home", "about", "skills", "projects", "contact"].map(
+                (nav) => (
+                  <li key={nav} className="border-b border-[#915EFF]/30 pb-2">
+                    <a
+                      href={`#${nav}`}
+                      className={`text-2xl ${
+                        active === nav ? "text-[#915EFF]" : "text-white"
+                      } font-medium`}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setActive(nav);
+                      }}
+                    >
+                      {nav.charAt(0).toUpperCase() + nav.slice(1)}
+                    </a>
+                  </li>
+                )
+              )}
+            </ul>
+            <div className="absolute bottom-10 left-0 right-0 text-center text-secondary text-sm">
+              Swipe up/down to navigate
+            </div>
+          </motion.div>
+        )}
       </div>
     </nav>
   );
