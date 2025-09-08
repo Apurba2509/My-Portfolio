@@ -1,3 +1,9 @@
+// 1. IMPORT YOUR LOCAL ASSETS HERE
+// I've imported the three local images you are using.
+import tailwind from "../assets/tailwind.png";
+import todo from "../assets/todo.png";
+import weather from "../assets/weather.png";
+
 export const technologies = [
   {
     name: "HTML 5",
@@ -42,35 +48,33 @@ export const technologies = [
   },
   {
     name: "Tailwind CSS",
-    icon: "../src/assets/tailwind.png",
+    // 2. USE THE IMPORTED VARIABLE
+    icon: tailwind,
   },
   {
     name: "Express",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
-  }
+  },
 ];
 
 export const projects = [
   {
     name: "To-Do List",
-    description: "A beautifully styled and functional To-Do List app built using HTML, CSS, and JavaScript. This app helps you organize your daily tasks with features like edit, delete, check-off, progress bar, and localStorage support.",
-    tags: [
-      { name: "HTML", color: "text-blue-500"},
-    ],
-    image: "../src/assets/todo.png",
+    description:
+      "A beautifully styled and functional To-Do List app built using HTML, CSS, and JavaScript. This app helps you organize your daily tasks with features like edit, delete, check-off, progress bar, and localStorage support.",
+    tags: [{ name: "HTML", color: "text-blue-500" }],
+    // 3. USE THE IMPORTED VARIABLE
+    image: todo,
     source_code_link: "https://github.com/Apurba2509/to-do-list",
   },
   // Add more projects as needed
   {
     name: "Weather",
-    description: "Welcome to the Weather Forecast App! This web application lets you check the current weather for any city around the world, displaying details such as temperature, humidity, and wind speed. 🌎✨",
-    tags: [
-      { name: "JS", color: "text-blue-500"},
-    ],
-    image: "../src/assets/weather.png",
+    description:
+      "Welcome to the Weather Forecast App! This web application lets you check the current weather for any city around the world, displaying details such as temperature, humidity, and wind speed. 🌎✨",
+    tags: [{ name: "JS", color: "text-blue-500" }],
+    // 4. USE THE IMPORTED VARIABLE
+    image: weather,
     source_code_link: "https://github.com/Apurba2509/Weather",
   },
 ];
-
-
-
