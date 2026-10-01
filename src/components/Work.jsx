@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { gsap, useGSAP, MOTION } from "../lib/gsap";
+import { gsap, useGSAP, MOTION, finePointer } from "../lib/gsap";
 import { moreWork, projects, socials } from "../data/content";
 import { posters } from "./posters";
 import { Arrow } from "./Icons";
@@ -35,7 +35,13 @@ function ProjectCard({ project, index, total }) {
   const primary = project.links[0];
 
   return (
-    <article data-stack-card className="stack-card" style={{ zIndex: index + 1 }} aria-labelledby={`${project.id}-title`}>
+    <article
+      data-stack-card
+      data-theme={{ ink: "dark", bone: "light", taxi: "taxi" }[project.tone]}
+      className="stack-card"
+      style={{ zIndex: index + 1 }}
+      aria-labelledby={`${project.id}-title`}
+    >
       <div data-card-inner className={`relative flex h-full flex-col overflow-hidden border ${tone.card}`}>
         <div data-shade className="pointer-events-none absolute inset-0 z-20 bg-ink opacity-0" />
 
@@ -48,16 +54,16 @@ function ProjectCard({ project, index, total }) {
         </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-12">
-          <div className="order-2 flex flex-col justify-between gap-10 p-5 md:p-8 lg:order-1 lg:col-span-5">
+          <div className="order-2 flex min-h-0 flex-col justify-between gap-6 p-5 md:p-8 lg:order-1 lg:col-span-5">
             <div>
-              <SplitReveal as="h3" id={`${project.id}-title`} className="display text-[clamp(3rem,6.2vw,6.8rem)]">
+              <SplitReveal as="h3" id={`${project.id}-title`} className="display text-[clamp(2.6rem,min(5.6vw,9svh),6.6rem)]">
                 {project.title}
               </SplitReveal>
-              <p className="serif mt-4 max-w-[22ch] text-[clamp(1.35rem,1.9vw,2.1rem)] leading-[1.05]">{project.tagline}</p>
+              <p className="serif mt-3 max-w-[22ch] text-[clamp(1.25rem,min(1.9vw,3.6svh),2.1rem)] leading-[1.05]">{project.tagline}</p>
             </div>
             <div>
-              <p className={`max-w-[48ch] text-[15px] leading-relaxed ${tone.soft}`}>{project.description}</p>
-              <ul className="label mt-5 flex flex-wrap gap-x-2 gap-y-1" aria-label="Built with">
+              <p className={`max-w-[48ch] text-[14px] leading-relaxed xl:text-[15px] ${tone.soft}`}>{project.description}</p>
+              <ul className="label mt-4 flex flex-wrap gap-x-2 gap-y-1" aria-label="Built with">
                 {project.stack.map((s, i) => (
                   <li key={s}>
                     {s}
@@ -65,7 +71,7 @@ function ProjectCard({ project, index, total }) {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 flex flex-wrap gap-2.5">
+              <div className="mt-5 flex flex-wrap gap-2.5">
                 {project.links.map((l) => (
                   <a
                     key={l.href}
@@ -89,11 +95,13 @@ function ProjectCard({ project, index, total }) {
             rel="noreferrer"
             tabIndex={-1}
             aria-hidden="true"
-            data-cursor={primary.label === "Live site" ? "Visit" : "Code"}
             data-poster
-            className={`relative order-1 block aspect-square overflow-hidden border-b lg:order-2 lg:col-span-7 lg:aspect-auto lg:border-b-0 lg:border-l ${tone.line}`}
+            className={`poster-link relative order-1 block aspect-square overflow-hidden border-b lg:order-2 lg:col-span-7 lg:aspect-auto lg:border-b-0 lg:border-l ${tone.line}`}
           >
             <Poster />
+            <span data-chip className="poster-chip">
+              {primary.label === "Live site" ? "Visit site" : "View code"} <Arrow direction="up-right" />
+            </span>
           </a>
         </div>
       </div>
@@ -128,10 +136,28 @@ export default function Work() {
           if (!next) return;
           gsap
             .timeline({ scrollTrigger: { trigger: next, start: "top bottom", end: "top 8%", scrub: true } })
-            .to(card.querySelector("[data-card-inner]"), { scale: 0.9, rotation: i % 2 ? 1.2 : -1.2, ease: "none" }, 0)
-            .to(card.querySelector("[data-shade]"), { opacity: 0.6, ease: "none" }, 0);
+            .to(card.querySelector("[data-card-inner]"), { scale: 0.92, ease: "none" }, 0)
+            .to(card.querySelector("[data-shade]"), { opacity: 0.55, ease: "none" }, 0);
         });
       });
+
+      // The "Visit site" chip trails the pointer while it's over a poster.
+      if (finePointer()) {
+        const cleanups = q("[data-poster]").map((poster) => {
+          const chip = poster.querySelector("[data-chip]");
+          const x = gsap.quickTo(chip, "x", { duration: 0.35, ease: "power3" });
+          const y = gsap.quickTo(chip, "y", { duration: 0.35, ease: "power3" });
+          // Kept inside the poster so it never gets cropped at the edges.
+          const move = (e) => {
+            const r = poster.getBoundingClientRect();
+            x(Math.min(e.clientX - r.left + 16, r.width - chip.offsetWidth - 12));
+            y(Math.min(e.clientY - r.top + 16, r.height - chip.offsetHeight - 12));
+          };
+          poster.addEventListener("pointermove", move);
+          return () => poster.removeEventListener("pointermove", move);
+        });
+        return () => cleanups.forEach((c) => c());
+      }
     },
     { scope: root }
   );
@@ -139,11 +165,11 @@ export default function Work() {
   const github = socials.find((s) => s.label === "GitHub");
 
   return (
-    <section id="work" ref={root} aria-labelledby="work-title" className="relative bg-ink px-5 pt-28 pb-28 md:px-10 md:pt-40 md:pb-40">
+    <section id="work" ref={root} data-theme="dark" aria-labelledby="work-title" className="relative bg-ink px-5 pt-28 pb-28 md:px-10 md:pt-40 md:pb-40">
       <div className="grid grid-cols-12 gap-x-6 gap-y-6">
         <p className="label col-span-12 text-mute md:col-span-3">0.4 — Selected work</p>
         <div className="col-span-12 md:col-span-9">
-          <SplitReveal as="h2" id="work-title" className="display text-[clamp(4.2rem,14vw,15rem)]">
+          <SplitReveal as="h2" id="work-title" className="display text-[clamp(4.2rem,min(14vw,25svh),15rem)]">
             Selected
             <br />
             work<span className="label ml-2 align-top text-[0.9rem] text-taxi md:text-base">({pad(projects.length)})</span>

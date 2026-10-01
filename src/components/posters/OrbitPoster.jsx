@@ -46,18 +46,7 @@ export default function OrbitPoster() {
             },
           });
         });
-        loops.push(
-          gsap.to(q("[data-nebula]"), {
-            scale: 1.15,
-            svgOrigin: `${CX} ${CY}`,
-            duration: 3.2,
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            stagger: 0.8,
-          }),
-          gsap.to(q("[data-typing]"), { opacity: 0.2, duration: 0.4, repeat: -1, yoyo: true, stagger: 0.15 })
-        );
+        loops.push(gsap.to(q("[data-typing]"), { opacity: 0.2, duration: 0.4, repeat: -1, yoyo: true, stagger: 0.15 }));
         playWhileVisible(ref.current, loops);
       });
     },

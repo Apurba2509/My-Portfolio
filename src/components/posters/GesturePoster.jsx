@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { gsap, rng, reducedMotion } from "../../lib/gsap";
+import { gsap, rng, reducedMotion, whileVisible } from "../../lib/gsap";
 
 // MediaPipe's 21 hand landmarks, posed as an open palm.
 const HAND = [
@@ -93,10 +93,9 @@ export default function GesturePoster() {
 
     const ro = new ResizeObserver(resize);
     ro.observe(el);
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
+    const watcher = whileVisible(wrap.current, (active) => {
+      visible = active;
     });
-    io.observe(el);
     const animate = !reducedMotion();
     if (animate) gsap.ticker.add(tick);
     const area = wrap.current;
@@ -105,7 +104,7 @@ export default function GesturePoster() {
 
     return () => {
       ro.disconnect();
-      io.disconnect();
+      watcher.kill();
       gsap.ticker.remove(tick);
       area.removeEventListener("pointermove", move);
       area.removeEventListener("pointerleave", leave);

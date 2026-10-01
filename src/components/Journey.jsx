@@ -53,8 +53,7 @@ export default function Journey() {
 
         q("[data-item]").forEach((item, i) => {
           gsap.from(item, {
-            yPercent: i % 2 ? -14 : 14,
-            rotation: i % 2 ? -4 : 4,
+            y: i % 2 ? -40 : 40,
             ease: "none",
             scrollTrigger: {
               trigger: item,
@@ -71,7 +70,7 @@ export default function Journey() {
   );
 
   return (
-    <section id="journey" ref={root} aria-labelledby="journey-title" className="on-bone relative overflow-clip bg-bone text-ink">
+    <section id="journey" ref={root} data-theme="light" aria-labelledby="journey-title" className="on-bone relative overflow-clip bg-bone text-ink">
       <div className="flex flex-col lg:motion-safe:h-[100svh] lg:motion-safe:flex-row">
         <header className="relative z-10 flex shrink-0 flex-col justify-center bg-bone px-5 pt-28 md:px-10 lg:motion-safe:w-[38vw] lg:motion-safe:border-r lg:motion-safe:border-ink/15 lg:motion-safe:pt-0">
           <p className="label text-mute-ink">0.6 — Journey</p>

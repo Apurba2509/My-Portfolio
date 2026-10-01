@@ -23,17 +23,18 @@ export default function About() {
         const words = SplitText.create(q("[data-manifesto]"), { type: "words" }).words;
         const marks = q("[data-mark]");
         const fillStart = 1.25;
-        const step = 0.06;
+        const step = 0.045;
 
         const tl = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: root.current, start: "top top", end: "+=280%", pin: true, scrub: 0.7 },
+          scrollTrigger: { trigger: root.current, start: "top top", end: "+=190%", pin: true, scrub: 0.6 },
         });
 
         // Dive through the zero: scale the curtain around a point inside the zero's left stroke.
         tl.to(q("[data-curtain-copy]"), { autoAlpha: 0, duration: 0.2 }, 0)
           .to(q("[data-zero]"), { scale: 70, svgOrigin: "412 500", ease: "power3.in", duration: 1.1 }, 0)
           .set(q("[data-curtain]"), { autoAlpha: 0 }, 1.1)
+          .set(q("[data-paper]"), { top: 0 }, 1.1)
           .from(q("[data-about-label]"), { autoAlpha: 0, y: 12, duration: 0.2 }, 1.05);
 
         // Words fill in as you read; highlights sweep in when their words arrive.
@@ -48,15 +49,17 @@ export default function About() {
           );
         });
 
-        tl.from(q("[data-now] > *"), { autoAlpha: 0, y: 24, duration: 0.3, stagger: 0.08 }, ">-0.2").to({}, { duration: 0.4 });
+        tl.from(q("[data-now] > *"), { autoAlpha: 0, y: 24, duration: 0.3, stagger: 0.08 }, ">-0.2").to({}, { duration: 0.25 });
       });
     },
     { scope: root }
   );
 
   return (
-    <section id="about" ref={root} aria-labelledby="about-title" className="on-bone relative h-[100svh] min-h-[620px] overflow-clip bg-bone text-ink">
-      <div className="flex h-full flex-col justify-center px-5 py-20 md:px-10">
+    <section id="about" ref={root} data-theme="light" aria-labelledby="about-title" className="on-bone relative h-[100svh] min-h-[620px] overflow-clip bg-ink text-ink">
+      {/* The paper starts 2px down so its edge never peeks out from under the black curtain. */}
+      <div data-paper className="absolute inset-x-0 top-[2px] bottom-0 bg-bone motion-reduce:top-0" />
+      <div className="relative flex h-full flex-col justify-center px-5 py-20 md:px-10">
         <h2 id="about-title" data-about-label className="label text-mute-ink">
           0.2 — Whoami
         </h2>

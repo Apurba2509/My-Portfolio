@@ -24,25 +24,74 @@ function ScrambleLink({ href, label }) {
   );
 }
 
+// The nav takes its colours from the section under it, hides while you scroll down,
+// and comes back with a solid bar when you scroll up, so page content never runs into it.
+const SKINS = {
+  dark: { text: "text-bone", bar: "bg-ink" },
+  light: { text: "text-ink", bar: "bg-bone" },
+  taxi: { text: "text-ink", bar: "bg-taxi" },
+};
+
+function useNavState(header) {
+  const [state, setState] = useState({ theme: "dark", hidden: false, solid: false });
+
+  useEffect(() => {
+    let frame = 0;
+    let lastY = window.scrollY;
+    let current = { theme: "dark", hidden: false, solid: false };
+    const check = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const below = document.elementsFromPoint(24, 32).find((el) => !header.current?.contains(el));
+      const theme = below?.closest("[data-theme]")?.dataset.theme ?? current.theme;
+      let hidden = current.hidden;
+      if (y > lastY + 6 && y > 160) hidden = true;
+      else if (y < lastY - 6 || y < 160) hidden = false;
+      lastY = y;
+      const next = { theme, hidden, solid: y > 40 };
+      if (next.theme !== current.theme || next.hidden !== current.hidden || next.solid !== current.solid) {
+        current = next;
+        setState(next);
+      }
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [header]);
+
+  return state;
+}
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const menuButton = useRef(null);
+  const header = useRef(null);
+  const { theme, hidden, solid } = useNavState(header);
+  const skin = SKINS[theme] ?? SKINS.dark;
 
   return (
     <>
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 text-bone mix-blend-difference">
-        <nav
-          aria-label="Primary"
-          className="label pointer-events-auto grid grid-cols-2 items-start gap-6 px-5 pt-5 md:grid-cols-12 md:px-10 md:pt-6"
-        >
+      <header
+        ref={header}
+        className={`fixed inset-x-0 top-0 z-50 transition-[translate,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] focus-within:translate-y-0 ${skin.text} ${solid ? skin.bar : "bg-transparent"} ${hidden && !open ? "-translate-y-full" : ""}`}
+      >
+        <nav aria-label="Primary" className="label grid grid-cols-2 items-start gap-6 px-5 py-4 md:grid-cols-12 md:px-10 md:py-5">
           <a href="#top" onClick={handleAnchor} className="col-span-1 py-1 md:col-span-3">
             {site.name}
             <sup className="ml-0.5 text-[0.6em]">©26</sup>
           </a>
-          <p className="hidden py-1 md:col-span-3 md:block">
+          <p className="hidden py-1 whitespace-nowrap md:col-span-3 lg:block">
             {site.location.split(",")[0]} — <LocalTime />
           </p>
-          <ul className="hidden justify-end gap-7 md:col-span-6 md:flex">
+          <ul className="hidden justify-end gap-7 md:col-span-9 md:flex lg:col-span-6">
             {nav.map((link) => (
               <li key={link.href}>
                 <ScrambleLink {...link} />

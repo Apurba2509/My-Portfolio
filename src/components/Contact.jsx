@@ -122,7 +122,7 @@ export default function Contact() {
       const mm = gsap.matchMedia();
       mm.add(MOTION, () => {
         gsap.from("[data-giant]", {
-          yPercent: 55,
+          yPercent: 30,
           ease: "none",
           scrollTrigger: { trigger: "[data-giant-wrap]", start: "top bottom", end: "bottom bottom", scrub: true },
         });
@@ -142,7 +142,7 @@ export default function Contact() {
   };
 
   return (
-    <footer id="contact" ref={root} aria-labelledby="contact-title" className="on-taxi relative overflow-clip bg-taxi text-ink">
+    <footer id="contact" ref={root} data-theme="taxi" aria-labelledby="contact-title" className="on-taxi relative overflow-clip bg-taxi text-ink">
       <div className="px-5 pt-28 md:px-10 md:pt-40">
         <div className="label flex justify-between gap-6">
           <span>1.0 — Contact</span>
@@ -165,7 +165,6 @@ export default function Contact() {
             <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-2">
               <a
                 href={`mailto:${site.email}`}
-                data-cursor="Email"
                 className="link-draw text-[clamp(1.45rem,3.3vw,3.2rem)] font-semibold tracking-[-0.03em] break-all"
               >
                 {site.email}
@@ -214,8 +213,8 @@ export default function Contact() {
         </div>
       </div>
 
-      <div data-giant-wrap className="overflow-clip" aria-hidden="true">
-        <p data-giant className="display pt-2 text-center text-[31vw] leading-[0.72] whitespace-nowrap">
+      <div data-giant-wrap className="overflow-clip px-5 pb-[3vw] md:px-10" aria-hidden="true">
+        <p data-giant className="display text-center text-[29vw] leading-[0.86] whitespace-nowrap">
           {site.first}
         </p>
       </div>

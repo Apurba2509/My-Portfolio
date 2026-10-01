@@ -7,6 +7,10 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, Draggable, useGSAP);
 
+// Always start at the top: the intro and the scroll scenes are built from there. ScrollTrigger keeps
+// its own copy of this setting and restores it after every refresh, so it has to be set through it.
+ScrollTrigger.clearScrollMemory("manual");
+
 gsap.defaults({ ease: "expo.out", duration: 1 });
 
 export { gsap, ScrollTrigger, SplitText, Draggable, useGSAP };
@@ -18,15 +22,21 @@ export const DESKTOP_MOTION = "(min-width: 1024px) and (prefers-reduced-motion: 
 export const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 export const finePointer = () => window.matchMedia("(pointer: fine)").matches;
 
-// Run looping animations only while their element is on screen.
-export function playWhileVisible(trigger, animations) {
-  animations.forEach((a) => a.pause());
+// Run looping animations only while their element can be seen. Inside the stacked project
+// cards that means until the next card slides over it, not until it leaves the screen.
+export function whileVisible(el, onChange) {
+  const next = el.closest("[data-stack-card]")?.nextElementSibling;
   return ScrollTrigger.create({
-    trigger,
+    trigger: el,
     start: "top bottom",
-    end: "bottom top",
-    onToggle: (self) => animations.forEach((a) => (self.isActive ? a.play() : a.pause())),
+    ...(next ? { endTrigger: next, end: "top 15%" } : { end: "bottom top" }),
+    onToggle: (self) => onChange(self.isActive),
   });
+}
+
+export function playWhileVisible(el, animations) {
+  animations.forEach((a) => a.pause());
+  return whileVisible(el, (active) => animations.forEach((a) => (active ? a.play() : a.pause())));
 }
 
 // Small deterministic RNG so generated artwork looks the same on every visit.

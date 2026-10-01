@@ -66,7 +66,7 @@ export default function Tapes() {
   );
 
   return (
-    <section ref={root} className="relative h-[clamp(240px,40vw,460px)] overflow-clip bg-bone">
+    <section ref={root} data-theme="light" className="relative h-[clamp(240px,40vw,460px)] overflow-clip bg-bone">
       <p className="sr-only">{tapes.one.join(" · ")}</p>
       <Tape items={tapes.two} className="top-[46%] bg-ink text-bone" style={{ transform: "translateY(-50%) rotate(3deg)" }} />
       <Tape items={tapes.one} className="top-[50%] bg-taxi text-ink shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)]" style={{ transform: "translateY(-50%) rotate(-4deg)" }} />

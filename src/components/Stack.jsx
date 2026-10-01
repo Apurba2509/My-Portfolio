@@ -31,11 +31,11 @@ export default function Stack() {
   );
 
   return (
-    <section id="stack" ref={root} aria-labelledby="stack-title" className="relative overflow-clip bg-ink py-28 md:py-40">
+    <section id="stack" ref={root} data-theme="dark" aria-labelledby="stack-title" className="relative overflow-clip bg-ink py-28 md:py-40">
       <div className="grid grid-cols-12 gap-x-6 gap-y-6 px-5 md:px-10">
         <p className="label col-span-12 text-mute md:col-span-3">0.8 — Stack</p>
         <div className="col-span-12 md:col-span-9">
-          <SplitReveal as="h2" id="stack-title" className="display text-[clamp(4rem,12vw,12.5rem)]">
+          <SplitReveal as="h2" id="stack-title" className="display text-[clamp(4rem,min(12vw,24svh),12.5rem)]">
             Tools of
             <br />
             the trade

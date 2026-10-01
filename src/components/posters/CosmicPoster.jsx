@@ -52,7 +52,6 @@ export default function CosmicPoster() {
             yoyo: true,
             stagger: { each: 0.08, from: "random" },
           }),
-          gsap.to(q("[data-glow]"), { scale: 1.08, svgOrigin: "300 300", duration: 2.4, ease: "sine.inOut", repeat: -1, yoyo: true }),
         ];
         playWhileVisible(ref.current, loops);
 

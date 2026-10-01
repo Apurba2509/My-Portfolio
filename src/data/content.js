@@ -29,7 +29,6 @@ export const socials = [
   { label: "GitHub", handle: "@Apurba2509", href: "https://github.com/Apurba2509" },
   { label: "Instagram", handle: "@___apurbax___", href: "https://www.instagram.com/___apurbax___/" },
   { label: "Holopin", handle: "@apurba2509", href: "https://holopin.io/@apurba2509" },
-  { label: "ORCID", handle: "0009-0009-6891-964X", href: "https://orcid.org/0009-0009-6891-964X" },
 ];
 
 export const hero = {
@@ -38,7 +37,7 @@ export const hero = {
     { k: "Study", v: "BCA ’28 — Techno Main Salt Lake" },
     { k: "Based", v: "Kolkata, IN — 22.57°N 88.36°E" },
   ],
-  caption: "Fig. 01 — the human behind the commits",
+  caption: "Fig. 01 — that’s me",
 };
 
 export const about = {

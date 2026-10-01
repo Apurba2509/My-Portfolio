@@ -3,8 +3,7 @@ import { ScrollTrigger, reducedMotion } from "./lib/gsap";
 import { getLenis, startSmoothScroll } from "./lib/smooth";
 import { ReadyContext } from "./lib/ready";
 import Preloader from "./components/Preloader";
-import Cursor from "./components/Cursor";
-import { Grain, GridOverlay, ScrollProgress } from "./components/Chrome";
+import { GridOverlay, ScrollProgress } from "./components/Chrome";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -28,8 +27,6 @@ export default function App() {
   const [ready, setReady] = useState(() => reducedMotion() || introSeen());
 
   useEffect(() => {
-    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
     const stop = startSmoothScroll();
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     return stop;
@@ -66,8 +63,6 @@ export default function App() {
       </main>
       <Contact />
       <ScrollProgress />
-      <Cursor />
-      <Grain />
       <GridOverlay />
     </ReadyContext.Provider>
   );
