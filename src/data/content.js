@@ -21,7 +21,7 @@ export const site = {
   location: "Kolkata, IN",
   // Paste the codes from Google Search Console and Bing Webmaster Tools (HTML tag method):
   // only the content="…" value, e.g. googleVerification: "abc123". See SEO.md.
-  googleVerification: "",
+  googleVerification: "N3tASIoiPc__D1eW40INrefJQi-m5dIB5wzixnzrxyc",
   bingVerification: "",
   coords: "22.57°N 88.36°E",
   timeZone: "Asia/Kolkata",
