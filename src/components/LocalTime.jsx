@@ -19,7 +19,7 @@ export default function LocalTime({ className = "" }) {
   const parts = Object.fromEntries(format.formatToParts(now).map((p) => [p.type, p.value]));
 
   return (
-    <time dateTime={now.toISOString()} className={`tabular ${className}`}>
+    <time dateTime={now.toISOString()} className={`tabular ${className}`} suppressHydrationWarning>
       {parts.hour}
       <span className="blink">:</span>
       {parts.minute} {parts.dayPeriod} IST

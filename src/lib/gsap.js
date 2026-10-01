@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, Draggable, use
 
 // Always start at the top: the intro and the scroll scenes are built from there. ScrollTrigger keeps
 // its own copy of this setting and restores it after every refresh, so it has to be set through it.
-ScrollTrigger.clearScrollMemory("manual");
+if (typeof window !== "undefined") ScrollTrigger.clearScrollMemory("manual");
 
 gsap.defaults({ ease: "expo.out", duration: 1 });
 

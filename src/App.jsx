@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ScrollTrigger, reducedMotion } from "./lib/gsap";
 import { getLenis, startSmoothScroll } from "./lib/smooth";
 import { ReadyContext } from "./lib/ready";
@@ -11,20 +11,26 @@ import Tapes from "./components/Tapes";
 import Work from "./components/Work";
 import Journey from "./components/Journey";
 import Stack from "./components/Stack";
+import Faq from "./components/Faq";
 import Contact from "./components/Contact";
 
-// The loader plays once per browser session.
+// The loader plays once per browser session, and never for people who prefer reduced motion.
 const SEEN_KEY = "apurba:intro-seen";
-function introSeen() {
+function skipIntro() {
   try {
-    return sessionStorage.getItem(SEEN_KEY) === "1";
+    return reducedMotion() || sessionStorage.getItem(SEEN_KEY) === "1";
   } catch {
     return false;
   }
 }
+const noSubscribe = () => () => {};
 
 export default function App() {
-  const [ready, setReady] = useState(() => reducedMotion() || introSeen());
+  // The pre-rendered HTML always includes the loader; the browser drops it before the first
+  // paint when it isn't needed, so the server and client markup match during hydration.
+  const skip = useSyncExternalStore(noSubscribe, skipIntro, () => false);
+  const [revealed, setRevealed] = useState(false);
+  const ready = skip || revealed;
 
   useEffect(() => {
     const stop = startSmoothScroll();
@@ -51,7 +57,7 @@ export default function App() {
       <a href="#content" className="skip-link">
         Skip to content
       </a>
-      {!ready && <Preloader onReveal={() => setReady(true)} />}
+      {!ready && <Preloader onReveal={() => setRevealed(true)} />}
       <Nav />
       <main id="content">
         <Hero />
@@ -60,6 +66,7 @@ export default function App() {
         <Work />
         <Journey />
         <Stack />
+        <Faq />
       </main>
       <Contact />
       <ScrollProgress />

@@ -6,8 +6,8 @@ Live at **[apurba2509-portfolio.vercel.app](https://apurba2509-portfolio.vercel.
 ![Preview](public/og.jpg)
 
 The whole page is one idea: taking things from **zero to one**. The loader counts from `0.00` to `1.00`,
-every section is numbered along the way (`0.2 Whoami` → `1.0 Contact`), and the scroll position in the
-corner reads `1.00` when you reach the end.
+every section is numbered along the way (`0.2 Whoami` → `1.0 Contact`), and a thin yellow line across the
+top fills up as you scroll towards one.
 
 ## Stack
 
@@ -32,13 +32,16 @@ page updates. You shouldn't need to touch any component.
 - **Keep it fresh:** change `site.updated` whenever you update anything. It appears in the "Now"
   block and the footer.
 - **Highlights:** wrap words in `*asterisks*` in `about.manifesto` to give them the yellow marker.
+- **Quick answers:** questions in `faq` show up in the `0.9` section and as FAQ data for search engines.
+- **Search:** `site.title` and `site.description` are what Google and AI engines show. See
+  **[SEO.md](SEO.md)** for Search Console and Bing setup.
 
 ## Running it
 
 ```bash
 npm install
 npm run dev       # http://localhost:5173
-npm run build     # production build in dist/
+npm run build     # production build in dist/, pre-rendered to real HTML
 npm run preview   # serve the production build
 npm run lint
 ```
@@ -57,10 +60,18 @@ src/
 │   ├── Work.jsx         # stacking project cards + "Also built"
 │   ├── Journey.jsx      # horizontal-scroll timeline (vertical on phones)
 │   ├── Stack.jsx        # giant scrolling tool lists
+│   ├── Faq.jsx          # quick answers (also published as FAQ data)
 │   ├── Contact.jsx      # footer: email, socials, form
 │   └── posters/         # generative artwork for each project
-└── index.css            # colours, type, cursor, grain
+├── entry-server.jsx     # renders the page to HTML at build time
+└── index.css            # colours, type, layout helpers
+scripts/
+├── seo.js               # head tags, structured data, sitemap, robots.txt, llms.txt
+└── prerender.js         # writes the rendered HTML into dist/index.html
 ```
+
+The build renders the whole page to static HTML, so search engines, AI crawlers and link previews see the
+full content without running JavaScript. The browser then hydrates it and the animations take over.
 
 Every scroll effect is wrapped in `gsap.matchMedia()`. Visitors who prefer reduced motion get a
 static, fully readable page with no loader, pinning or smooth scrolling.

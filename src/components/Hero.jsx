@@ -40,13 +40,20 @@ export default function Hero() {
       mm.add(MOTION, () => {
         // Plays when the preloader lifts (see the effect below). Once the letters have risen
         // into place their masks come off, so nothing gets sliced when they move later.
-        intro.current = gsap
-          .timeline({ paused: true, onComplete: () => gsap.set(q("[data-word]"), { overflow: "visible" }) })
-          .from(chars, { yPercent: 118, duration: 1.5, stagger: 0.05, ease: "expo.out" })
-          .from(q("[data-meta]"), { y: 18, autoAlpha: 0, duration: 1, stagger: 0.07, ease: "power3.out" }, 0.25)
-          .from(words, { yPercent: 118, duration: 1.2, stagger: 0.035, ease: "expo.out" }, 0.3)
-          .from(q("[data-card]"), { scale: 0.5, rotation: -30, autoAlpha: 0, duration: 1.5, ease: "expo.out" }, 0.45)
-          .from(q("[data-tape]"), { scaleX: 0, duration: 0.7, ease: "power3.out" }, 1.1);
+        // Repeat visits skip the loader, and the intro with it: the pre-rendered hero is
+        // already on screen, and hiding it just to animate it back in would flicker.
+        const unmask = () => gsap.set(q("[data-word]"), { overflow: "visible" });
+        if (document.documentElement.classList.contains("skip-intro")) {
+          unmask();
+        } else {
+          intro.current = gsap
+            .timeline({ paused: true, onComplete: unmask })
+            .from(chars, { yPercent: 118, duration: 1.5, stagger: 0.05, ease: "expo.out" })
+            .from(q("[data-meta]"), { y: 18, autoAlpha: 0, duration: 1, stagger: 0.07, ease: "power3.out" }, 0.25)
+            .from(words, { yPercent: 118, duration: 1.2, stagger: 0.035, ease: "expo.out" }, 0.3)
+            .from(q("[data-card]"), { scale: 0.5, rotation: -30, autoAlpha: 0, duration: 1.5, ease: "expo.out" }, 0.45)
+            .from(q("[data-tape]"), { scaleX: 0, duration: 0.7, ease: "power3.out" }, 1.1);
+        }
 
         // Scrolling away: the letters drift up at slightly different speeds and fade.
         const lift = chars.map((_, i) => 0.25 + ((i * 7) % 5) * 0.12);
@@ -156,12 +163,12 @@ export default function Hero() {
               <picture>
                 <source
                   type="image/webp"
-                  srcSet="/img/apurba-480.webp 480w, /img/apurba-720.webp 720w"
+                  srcSet="/img/apurba-das-480.webp 480w, /img/apurba-das-720.webp 720w"
                   sizes="(min-width: 640px) 20vw, 32vw"
                 />
                 <img
-                  src="/img/apurba-480.jpg"
-                  srcSet="/img/apurba-480.jpg 480w, /img/apurba-720.jpg 720w"
+                  src="/img/apurba-das-480.jpg"
+                  srcSet="/img/apurba-das-480.jpg 480w, /img/apurba-das-720.jpg 720w"
                   sizes="(min-width: 640px) 20vw, 32vw"
                   width="480"
                   height="600"
@@ -187,7 +194,11 @@ export default function Hero() {
         </div>
       </div>
 
-      <h1 ref={name} aria-label={site.name} className="display relative z-10 px-5 pb-3 md:px-10 md:pb-5">
+      <h1
+        ref={name}
+        aria-label={`${site.name} — ${site.role} in ${site.city}`}
+        className="display hero-name relative z-10 px-5 pb-3 md:px-10 md:pb-5"
+      >
         <span data-fit aria-hidden="true" className="inline-block whitespace-nowrap">
           <span data-word className="word-mask block sm:inline-block">
             {site.first}
@@ -195,6 +206,10 @@ export default function Hero() {
           <span data-word className="word-mask block sm:inline-block">
             {site.last}
           </span>
+        </span>
+        <span className="sr-only">
+          {" "}
+          — {site.role} in {site.city}
         </span>
       </h1>
     </section>

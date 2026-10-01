@@ -5,10 +5,24 @@ export const site = {
   name: "Apurba Das",
   first: "Apurba",
   last: "Das",
+  handle: "Apurba2509",
   role: "Full-stack & mobile developer",
+  // What search engines and AI answer engines show. Keep the title under ~60 characters
+  // and the description under ~155.
+  title: "Apurba Das — Full-Stack & Mobile Developer in Kolkata",
+  description:
+    "Apurba Das is a full-stack and mobile developer from Kolkata building React, React Native, Flutter and cloud apps. BCA student at Techno Main Salt Lake.",
   url: "https://apurba2509-portfolio.vercel.app",
   email: "apurbadas2509@gmail.com",
+  city: "Kolkata",
+  region: "West Bengal",
+  country: "IN",
+  school: "Techno Main Salt Lake",
   location: "Kolkata, IN",
+  // Paste the codes from Google Search Console and Bing Webmaster Tools (HTML tag method):
+  // only the content="…" value, e.g. googleVerification: "abc123". See SEO.md.
+  googleVerification: "",
+  bingVerification: "",
   coords: "22.57°N 88.36°E",
   timeZone: "Asia/Kolkata",
   // Shown in the "Now" block and the footer, so visitors know the site is current.
@@ -28,7 +42,6 @@ export const socials = [
   { label: "LinkedIn", handle: "in/apurbadas2509", href: "https://www.linkedin.com/in/apurbadas2509/" },
   { label: "GitHub", handle: "@Apurba2509", href: "https://github.com/Apurba2509" },
   { label: "Instagram", handle: "@___apurbax___", href: "https://www.instagram.com/___apurbax___/" },
-  { label: "Holopin", handle: "@apurba2509", href: "https://holopin.io/@apurba2509" },
 ];
 
 export const hero = {
@@ -250,6 +263,35 @@ export const stack = [
   {
     label: "Tinker",
     items: ["Kotlin", "Python", "Rust", "C", "Three.js", "GSAP", "Gemini API", "Git", "Android Studio"],
+  },
+];
+
+// Shown as "Quick answers" near the end of the page and published as FAQ structured data,
+// so search and AI answer engines can quote it directly. Keep answers short and factual.
+export const faq = [
+  {
+    q: "Who is Apurba Das?",
+    a: "Apurba Das is a full-stack and mobile developer from Kolkata, India, studying for a BCA at Techno Main Salt Lake (2024–2028). Apurba builds web apps, Android and cross-platform mobile apps, and cloud-backed products, and is active in GDG On-Campus TMSL, Google Cloud Arcade and open-source programmes such as GSSoC ’26.",
+  },
+  {
+    q: "What technologies does Apurba Das work with?",
+    a: "Front end and mobile: React, React Native, Flutter, Jetpack Compose, TypeScript and Tailwind CSS. Back end and cloud: Node.js, Express, Firebase, Supabase, MongoDB, MySQL, AWS and Google Cloud. Also Kotlin, Python, Rust, Three.js, GSAP and the Gemini API.",
+  },
+  {
+    q: "What projects has Apurba Das built?",
+    a: "Highlights include Cosmic Scroll, a scroll-driven WebGL experience; Ritual, an offline-first habit tracker in React Native; Crypto Tip Jar, a Stellar Soroban dApp; NaviGO, routing on Kolkata’s road network; Orbit AI, a Gemini chatbot for Android; and GestureFlow 3D, hand-gesture particles built with MediaPipe.",
+  },
+  {
+    q: "Which hackathons and tech communities is Apurba Das part of?",
+    a: "Apurba prototyped DisasterOps for the Google Solution Challenge 2026, competed in Smart India Hackathon and HackForge at Srijan ’26, and co-organized TechSprint, GDG On-Campus TMSL’s first hackathon. Apurba is Social Media Head & PR Core at GDG On-Campus TMSL, Joint Head of QZone and a Google Cloud Arcade co-facilitator.",
+  },
+  {
+    q: "Is Apurba Das open to internships and collaborations?",
+    a: "Yes. Apurba is open to internships, collaborations, hackathon teams and open-source work across web, mobile and cloud. The quickest way to get in touch is email (apurbadas2509@gmail.com) or LinkedIn.",
+  },
+  {
+    q: "How can I contact Apurba Das?",
+    a: "Email apurbadas2509@gmail.com, message Apurba on LinkedIn at linkedin.com/in/apurbadas2509, or use the contact form on this site. Code and projects are on GitHub at github.com/Apurba2509.",
   },
 ];
 

@@ -41,6 +41,7 @@ export default function Preloader({ onReveal }) {
   return (
     <div
       ref={root}
+      data-preloader
       role="status"
       aria-label="Loading"
       className="fixed inset-0 z-[120] flex flex-col justify-between bg-ink p-5 text-bone md:p-10"

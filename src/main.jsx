@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import "@fontsource-variable/archivo/wdth.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
@@ -8,11 +8,16 @@ import App from "./App";
 
 if (!location.hash) window.scrollTo(0, 0);
 
-createRoot(document.getElementById("root")).render(
+// Production pages arrive pre-rendered (see scripts/prerender.js), so React hydrates the existing
+// HTML. The dev server sends an empty root and renders from scratch.
+const root = document.getElementById("root");
+const app = (
   <StrictMode>
     <App />
   </StrictMode>
 );
+if (root.hasChildNodes()) hydrateRoot(root, app);
+else createRoot(root).render(app);
 
 console.log(
   "%cAPURBA DAS%c\nBuilt from zero to one with React, GSAP & Lenis.\nPress G to see the grid.\nSource: https://github.com/Apurba2509/My-Portfolio",
