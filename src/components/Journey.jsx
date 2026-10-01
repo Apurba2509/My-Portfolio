@@ -27,12 +27,9 @@ export default function Journey() {
         const track = q("[data-track]")[0];
         const count = q("[data-count]")[0];
         const bar = q("[data-bar]")[0];
-        // Layout offsets ignore transforms, so this stays correct mid-scroll.
-        const distance = () => {
-          const last = track.lastElementChild;
-          const end = last.offsetLeft + last.offsetWidth - track.offsetLeft;
-          return Math.max(0, end + window.innerWidth * 0.08 - track.clientWidth);
-        };
+        // How far the row slides: the whole row plus a little breathing room, minus what's
+        // already visible. scrollWidth measures the content and ignores the row's own transform.
+        const distance = () => Math.max(0, track.scrollWidth + window.innerWidth * 0.08 - track.clientWidth);
 
         const slide = gsap.to(track, {
           x: () => -distance(),
