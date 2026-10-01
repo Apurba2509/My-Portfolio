@@ -1,154 +1,224 @@
-// src/components/Contact.jsx
-// FINAL: Fully configured with your EmailJS keys and ready to use.
+import { useRef, useState } from "react";
+import { gsap, useGSAP, MOTION } from "../lib/gsap";
+import { scrollToTarget } from "../lib/smooth";
+import { emailjs, site, socials } from "../data/content";
+import { Arrow } from "./Icons";
+import LocalTime from "./LocalTime";
+import Magnetic from "./Magnetic";
+import SplitReveal from "./SplitReveal";
 
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
+const FIELDS = [
+  { name: "name", label: "Your name", type: "text", placeholder: "What should I call you?", autoComplete: "name" },
+  { name: "email", label: "Your email", type: "email", placeholder: "Where can I reply?", autoComplete: "email" },
+];
 
-import { SectionWrapper } from "../hoc";
-import { fadeIn, textVariant } from "../utils/motion";
+const STATUS = {
+  sending: "Sending…",
+  sent: "Thanks — your message is in. I’ll reply soon.",
+  error: "That didn’t go through. Try again, or email me directly.",
+  invalid: "Please fill in your name, a valid email and a message.",
+};
 
-const Contact = () => {
-  const formRef = useRef();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [loading, setLoading] = useState(false);
+function ContactForm() {
+  const [form, setForm] = useState({ name: "", email: "", message: "", company: "" });
+  const [status, setStatus] = useState("idle");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  const update = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      alert("Please fill out all fields.");
+    if (form.company) return; // Bots fill the hidden field; people never see it.
+    if (!form.name.trim() || !form.message.trim() || !e.currentTarget.checkValidity()) {
+      setStatus("invalid");
       return;
     }
-    setLoading(true);
-
-    emailjs
-      .send(
-        "service_7x5i9x6",      // Your Service ID
-        "template_qchyt8b",     // Your Template ID
+    setStatus("sending");
+    try {
+      const { default: client } = await import("@emailjs/browser");
+      await client.send(
+        emailjs.serviceId,
+        emailjs.templateId,
         {
           from_name: form.name,
-          to_name: "Apurba",
+          to_name: site.first,
           from_email: form.email,
-          to_email: "apurbadas2509@gmail.com",
+          reply_to: form.email,
+          to_email: site.email,
           message: form.message,
         },
-        "WnLgZwFr8b4NFjhhh"      // Your Public Key
-      )
-      .then(
-        () => {
-          setLoading(false);
-          alert("Thank you! I will get back to you as soon as possible.");
-          setForm({ name: "", email: "", message: "" });
-        },
-        (error) => {
-          setLoading(false);
-          console.error(error);
-          alert("Ahh, something went wrong. Please try again.");
-        }
+        { publicKey: emailjs.publicKey }
       );
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "", company: "" });
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
+  };
+
+  const input =
+    "w-full border-b-2 border-ink/25 bg-transparent py-3 text-[clamp(1.15rem,1.6vw,1.5rem)] outline-none transition-colors placeholder:text-ink/40 focus:border-ink focus-visible:outline-none";
+
+  return (
+    <form onSubmit={submit} noValidate className="flex flex-col gap-8" aria-describedby="form-status">
+      {FIELDS.map((f, i) => (
+        <label key={f.name} className="block">
+          <span className="label">
+            ({String(i + 1).padStart(2, "0")}) {f.label}
+          </span>
+          <input
+            name={f.name}
+            type={f.type}
+            required
+            value={form[f.name]}
+            onChange={update}
+            placeholder={f.placeholder}
+            autoComplete={f.autoComplete}
+            className={input}
+          />
+        </label>
+      ))}
+      <label className="block">
+        <span className="label">(03) Your message</span>
+        <textarea
+          name="message"
+          required
+          rows={4}
+          value={form.message}
+          onChange={update}
+          placeholder="An idea, a project, a hackathon team…"
+          className={`${input} resize-none`}
+        />
+      </label>
+      <label className="absolute -left-[9999px]" aria-hidden="true">
+        Company
+        <input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={update} />
+      </label>
+
+      <div className="flex flex-wrap items-center gap-6">
+        <Magnetic>
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="label inline-flex items-center gap-3 bg-ink px-7 py-4 text-taxi transition-transform duration-300 hover:scale-[1.03] disabled:opacity-60"
+          >
+            {status === "sending" ? "Sending" : "Send message"} <Arrow />
+          </button>
+        </Magnetic>
+        <p id="form-status" role="status" aria-live="polite" className="label max-w-[34ch]">
+          {STATUS[status] ?? ""}
+        </p>
+      </div>
+    </form>
+  );
+}
+
+export default function Contact() {
+  const root = useRef(null);
+  const [copied, setCopied] = useState(false);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION, () => {
+        gsap.from("[data-giant]", {
+          yPercent: 55,
+          ease: "none",
+          scrollTrigger: { trigger: "[data-giant-wrap]", start: "top bottom", end: "bottom bottom", scrub: true },
+        });
+      });
+    },
+    { scope: root }
+  );
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(site.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${site.email}`;
+    }
   };
 
   return (
-    <div className="xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden">
-      <motion.div
-        variants={fadeIn("left", "tween", 0.2, 1)}
-        className="flex-[0.75] bg-tertiary p-8 rounded-2xl"
-      >
-        <motion.div variants={textVariant()}>
-          <h3 className="text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px]">
-            Get in <span className="text-[#915EFF]">Touch</span>
-          </h3>
-          <p className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]">
-            I'm currently open to new opportunities and collaborations. Feel free to reach out!
-          </p>
-        </motion.div>
-
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="mt-12 flex flex-col gap-8"
-        >
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Name</span>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="What's your name?"
-              className="bg-primary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium focus:ring-2 focus:ring-[#915EFF] transition-all"
-              required
-            />
-          </label>
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Email</span>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="What's your email?"
-              className="bg-primary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium focus:ring-2 focus:ring-[#915EFF] transition-all"
-              required
-            />
-          </label>
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Message</span>
-            <textarea
-              rows="7"
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              placeholder="What would you like to discuss?"
-              className="bg-primary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium focus:ring-2 focus:ring-[#915EFF] transition-all"
-              required
-            />
-          </label>
-
-          <motion.button
-            type="submit"
-            className="bg-primary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl hover:bg-[#915EFF] transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {loading ? "Sending..." : "Send Message"}
-          </motion.button>
-        </form>
-      </motion.div>
-
-      <motion.div
-        variants={fadeIn("right", "tween", 0.4, 1)}
-        className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px] flex items-center justify-center"
-      >
-        <div className="flex flex-col items-center gap-8">
-          <h3 className="text-white text-2xl font-bold">Connect With Me</h3>
-          <div className="flex gap-6">
-            <a href="https://github.com/Apurba2509" target="_blank" rel="noopener noreferrer" className="bg-tertiary p-4 rounded-full hover:bg-[#915EFF] transition-colors" aria-label="GitHub">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="github" className="w-8 h-8 invert brightness-0 object-contain" />
-            </a>
-            <a href="https://www.linkedin.com/in/apurbadas2509/" target="_blank" rel="noopener noreferrer" className="bg-tertiary p-4 rounded-full hover:bg-[#915EFF] transition-colors" aria-label="LinkedIn">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="linkedin" className="w-8 h-8 object-contain" />
-            </a>
-            <a href="https://www.instagram.com/___apurbax___/" target="_blank" rel="noopener noreferrer" className="bg-tertiary p-4 rounded-full hover:bg-[#915EFF] transition-colors" aria-label="Instagram">
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
-            </a>
-          </div>
-          <p className="text-secondary text-center max-w-md mt-4">
-            Feel free to reach out through any of these platforms.
-          </p>
+    <footer id="contact" ref={root} aria-labelledby="contact-title" className="on-taxi relative overflow-clip bg-taxi text-ink">
+      <div className="px-5 pt-28 md:px-10 md:pt-40">
+        <div className="label flex justify-between gap-6">
+          <span>1.0 — Contact</span>
+          <span>You made it to one.</span>
         </div>
-      </motion.div>
-    </div>
-  );
-};
 
-export default SectionWrapper(Contact, "contact");
+        <SplitReveal as="h2" id="contact-title" className="display mt-8 text-[clamp(4rem,12.5vw,13.5rem)]">
+          Let’s take it
+          <br />
+          from zero
+          <br />
+          <span className="inline-flex items-center gap-[0.12em]">
+            <Arrow /> one.
+          </span>
+        </SplitReveal>
+
+        <div className="mt-16 grid grid-cols-12 gap-x-6 gap-y-16 border-t border-ink/20 pt-8 md:mt-24">
+          <div className="col-span-12 lg:col-span-6">
+            <p className="label">Write to me</p>
+            <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+              <a
+                href={`mailto:${site.email}`}
+                data-cursor="Email"
+                className="link-draw text-[clamp(1.45rem,3.3vw,3.2rem)] font-semibold tracking-[-0.03em] break-all"
+              >
+                {site.email}
+              </a>
+              <button type="button" onClick={copy} className="label border border-ink/40 px-2.5 py-1 transition-colors hover:bg-ink hover:text-taxi">
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+
+            <ul className="mt-12 border-t border-ink/20">
+              {socials.map((s) => (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center justify-between gap-4 border-b border-ink/20 py-4 transition-[padding] duration-500 hover:px-3"
+                  >
+                    <span className="display text-[clamp(1.9rem,3vw,2.8rem)]">{s.label}</span>
+                    <span className="label flex items-center gap-3">
+                      <span className="hidden sm:inline">{s.handle}</span>
+                      <Arrow direction="up-right" className="transition-transform duration-500 group-hover:rotate-45" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="relative col-span-12 lg:col-span-5 lg:col-start-8">
+            <p className="label mb-8">Or leave a note</p>
+            <ContactForm />
+          </div>
+        </div>
+
+        <div className="label mt-24 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-ink/20 py-5 md:mt-32">
+          <span>© {new Date().getFullYear()} {site.name}</span>
+          <span>
+            {site.location} — <LocalTime />
+          </span>
+          <span>Updated {site.updated}</span>
+          <span>Built with React, GSAP & Lenis</span>
+          <button type="button" onClick={() => scrollToTarget(0, { duration: 2.2 })} className="link-draw uppercase">
+            Back to top ↑
+          </button>
+        </div>
+      </div>
+
+      <div data-giant-wrap className="overflow-clip" aria-hidden="true">
+        <p data-giant className="display pt-2 text-center text-[31vw] leading-[0.72] whitespace-nowrap">
+          {site.first}
+        </p>
+      </div>
+    </footer>
+  );
+}
