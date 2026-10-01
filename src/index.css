@@ -1,105 +1,295 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@theme {
+  --color-ink: #0a0a09;
+  --color-ink-2: #141412;
+  --color-ink-3: #1f1f1c;
+  --color-bone: #eeebe3;
+  --color-bone-2: #e1ddd2;
+  --color-mute: #8f8c84;
+  --color-mute-ink: #5c5a54;
+  --color-taxi: #ffd100;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --font-sans: "Archivo Variable", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Archivo Variable", "Arial Narrow", sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Add this if missing */
 @layer base {
+  html {
+    background: var(--color-ink);
+    color: var(--color-bone);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
-    @apply bg-primary text-white;
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    min-width: 320px;
+  }
+
+  html.is-loading {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: var(--color-taxi);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-taxi);
+    outline-offset: 3px;
+  }
+
+  .on-taxi :focus-visible,
+  .on-bone :focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  img,
+  svg {
+    display: block;
   }
 }
 
-:root {
-  --primary: #050816;
-  --secondary: #aaa6c3;
-  --tertiary: #151030;
+@layer components {
+  /* Condensed, heavy, uppercase: the voice of the site. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 850;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: 0.84;
+    letter-spacing: -0.01em;
+  }
+
+  .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Fill goes transparent but `color` stays, so the stroke can still use currentColor. */
+  .outline-text {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1.5px currentColor;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Masks for text that slides in: a little breathing room so glyphs aren't cropped. */
+  .split-line-mask {
+    padding-block: 0.08em;
+    margin-block: -0.08em;
+  }
+
+  .word-mask {
+    overflow: clip;
+    padding-top: 0.32em;
+    margin-top: -0.32em;
+  }
+
+  .st-word-mask {
+    padding: 0.1em 0.08em;
+    margin: -0.1em -0.08em;
+  }
+
+  .blink {
+    animation: blink 1.2s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Project cards stack on top of each other on large screens. */
+  .stack-card {
+    position: relative;
+  }
+
+  @media (min-width: 1024px) and (min-height: 640px) {
+    .stack-card {
+      position: sticky;
+      top: 8vh;
+      height: 84vh;
+    }
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 16px;
+    top: -100px;
+    z-index: 200;
+    padding: 10px 14px;
+    background: var(--color-taxi);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .skip-link:focus {
+    top: 16px;
+  }
+
+  /* Film grain over everything. */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.2 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation: grain 0.9s steps(4) infinite;
+  }
+
+  @keyframes grain {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-3%, 2%); }
+    50% { transform: translate(2%, -3%); }
+    75% { transform: translate(-2%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* Custom cursor (only added on devices with a fine pointer). */
+  html.has-cursor,
+  html.has-cursor a,
+  html.has-cursor button,
+  html.has-cursor [data-cursor] {
+    cursor: none;
+  }
+
+  html.has-cursor input,
+  html.has-cursor textarea {
+    cursor: text;
+  }
+
+  .cursor-dot {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 150;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 999px;
+    background: var(--color-bone);
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+
+  .cursor-label {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 151;
+    width: 92px;
+    height: 92px;
+    margin: -46px 0 0 -46px;
+    border-radius: 999px;
+    background: var(--color-taxi);
+    color: var(--color-ink);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    pointer-events: none;
+    transform: scale(0);
+  }
+
+  /* Hover fill for list rows. */
+  .row-fill {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .row-fill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-taxi);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.55s var(--ease-expo);
+  }
+
+  .row-fill:hover::before,
+  .row-fill:focus-visible::before {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+
+  .row-fill:hover,
+  .row-fill:focus-visible {
+    color: var(--color-ink);
+  }
+
+  /* Underline that draws in on hover. */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.5s var(--ease-expo);
+  }
+
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    pointer-events: none;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    padding: 0 20px;
+  }
+
+  .grid-overlay > span {
+    background: color-mix(in srgb, var(--color-taxi) 12%, transparent);
+    border-inline: 1px solid color-mix(in srgb, var(--color-taxi) 35%, transparent);
+  }
+
+  @media (min-width: 768px) {
+    .grid-overlay {
+      padding: 0 40px;
+      gap: 24px;
+    }
+  }
 }
 
-body {
-  @apply bg-[var(--primary)] text-white;
-}
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-.logo-container {
-  clip-path: circle(50% at 50% 50%);
-  transition: all 0.3s ease;
-}
-
-.logo-container:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(145, 94, 255, 0.5);
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
