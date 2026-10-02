@@ -182,9 +182,9 @@ export default function Contact() {
 
         <SplitReveal as="h2" id="contact-title" className="display mt-8 text-[clamp(4rem,12.5vw,13.5rem)]">
           Let’s take it
-          <br />
+          {" "}<br />
           from zero
-          <br />
+          {" "}<br />
           <span className="inline-flex items-center gap-[0.12em]">
             <Arrow /> one.
           </span>
@@ -211,7 +211,7 @@ export default function Contact() {
                   <a
                     href={s.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="me noreferrer"
                     className="group flex items-center justify-between gap-4 border-b border-ink/20 py-4 transition-[padding] duration-500 hover:px-3"
                   >
                     <span className="display text-[clamp(1.9rem,3vw,2.8rem)]">{s.label}</span>

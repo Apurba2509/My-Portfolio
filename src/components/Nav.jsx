@@ -201,7 +201,7 @@ function MobileMenu({ open, onClose }) {
 
       <div className="label flex flex-wrap justify-between gap-x-5 gap-y-2">
         {socials.slice(0, 3).map((s) => (
-          <a key={s.label} href={s.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 py-1">
+          <a key={s.label} href={s.href} target="_blank" rel="me noreferrer" className="inline-flex items-center gap-1.5 py-1">
             {s.label} <Arrow direction="up-right" />
           </a>
         ))}

@@ -47,6 +47,9 @@ export const socials = [
   { label: "Instagram", handle: "@___apurbax___", href: "https://www.instagram.com/___apurbax___/" },
 ];
 
+// More public profiles of the same person. Search engines get these (sameAs, rel="me"); the page doesn't show them.
+export const otherProfiles = ["https://me.developers.google.com/u/Apurba2509"];
+
 export const hero = {
   meta: [
     { k: "Role", v: "Full-stack & mobile developer" },

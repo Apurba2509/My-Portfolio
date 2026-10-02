@@ -171,7 +171,7 @@ export default function Work() {
         <div className="col-span-12 md:col-span-9">
           <SplitReveal as="h2" id="work-title" className="display text-[clamp(4.2rem,min(14vw,25svh),15rem)]">
             Selected
-            <br />
+            {" "}<br />
             work<span className="label ml-2 align-top text-[0.9rem] text-taxi md:text-base">({pad(projects.length)})</span>
           </SplitReveal>
           <p className="serif mt-8 max-w-[26ch] text-[clamp(1.5rem,2.4vw,2.4rem)] leading-[1.05] text-bone/85">

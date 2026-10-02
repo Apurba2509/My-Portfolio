@@ -2,11 +2,13 @@
 // the <head> tags (title, description, social cards, structured data) plus sitemap.xml,
 // robots.txt, llms.txt and site.webmanifest. Edit the content file, rebuild, and it all follows.
 
-import { about, faq, journey, moreWork, projects, site, socials, stack } from "../src/data/content.js";
+import { about, faq, journey, moreWork, otherProfiles, projects, site, socials, stack } from "../src/data/content.js";
 
 const url = `${site.url}/`;
 const portrait = `${site.url}/img/apurba-das-720.jpg`;
 const ogImage = `${site.url}/og.jpg`;
+// Every profile that belongs to Apurba, so search engines and AI treat them as one person.
+const profileUrls = [...socials.map((s) => s.href), ...otherProfiles];
 // Google's Profile page format wants full ISO 8601 date-times (date, time and zone), not bare dates.
 const now = () => new Date().toISOString();
 const plain = (text) => text.replace(/\*/g, "");
@@ -81,7 +83,7 @@ function structuredData() {
           .filter((j) => j.type === "Community")
           .map((j) => ({ "@type": "Organization", name: j.title, description: j.detail })),
         knowsAbout: skills,
-        sameAs: socials.map((s) => s.href),
+        sameAs: profileUrls,
       },
       {
         "@type": "ItemList",
@@ -151,7 +153,7 @@ function headTags() {
     meta("twitter:image:alt", imageAlt),
 
     // rel="me" ties this site to the same person's profiles elsewhere.
-    ...socials.map((s) => `<link rel="me" href="${s.href}" />`),
+    ...profileUrls.map((href) => `<link rel="me" href="${href}" />`),
     `<link rel="alternate" type="text/plain" href="/llms.txt" title="${escapeAttr(site.name)} for language models" />`,
   ];
 

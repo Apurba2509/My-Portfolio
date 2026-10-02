@@ -37,7 +37,7 @@ export default function Stack() {
         <div className="col-span-12 md:col-span-9">
           <SplitReveal as="h2" id="stack-title" className="display text-[clamp(4rem,min(12vw,24svh),12.5rem)]">
             Tools of
-            <br />
+            {" "}<br />
             the trade
           </SplitReveal>
         </div>

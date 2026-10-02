@@ -73,7 +73,7 @@ export default function Journey() {
           <p className="label text-mute-ink">0.6 — Journey</p>
           <SplitReveal as="h2" id="journey-title" className="display mt-5 text-[clamp(4rem,11vw,9.5rem)] lg:motion-safe:text-[clamp(4rem,7.2vw,8.5rem)]">
             Off the
-            <br />
+            {" "}<br />
             keyboard
           </SplitReveal>
           <p className="serif mt-6 max-w-[24ch] text-[clamp(1.4rem,2vw,2.1rem)] leading-[1.05]">
