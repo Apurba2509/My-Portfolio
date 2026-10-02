@@ -20,7 +20,7 @@ export default function About() {
       const mm = gsap.matchMedia();
 
       mm.add(MOTION, () => {
-        const words = SplitText.create(q("[data-manifesto]"), { type: "words" }).words;
+        const words = SplitText.create(q("[data-manifesto]"), { type: "words", aria: "none" }).words;
         const marks = q("[data-mark]");
         const fillStart = 1.25;
         const step = 0.045;

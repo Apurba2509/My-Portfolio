@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { gsap, SplitText, Draggable, useGSAP, MOTION, finePointer } from "../lib/gsap";
+import { gsap, SplitText, useGSAP, MOTION, finePointer } from "../lib/gsap";
 import { useReady } from "../lib/ready";
 import { hero, site } from "../data/content";
+import Avatar from "./Avatar";
 
 export default function Hero() {
   const root = useRef(null);
@@ -23,18 +24,36 @@ export default function Hero() {
       const byHeight = window.innerHeight * (stacked ? 0.16 : 0.4);
       h1.style.fontSize = `${Math.floor(Math.min(byWidth, byHeight))}px`;
     };
-    fit();
-    document.fonts?.ready.then(fit);
-    const ro = new ResizeObserver(fit);
-    ro.observe(root.current);
-    return () => ro.disconnect();
+    // Measure only once the real fonts are in. Sizing against the fallback font and again when
+    // the web font arrived made the letters jump, which Google counts as layout shift (CLS).
+    // The hero stays hidden until then (see .fonts-pending in index.css).
+    let ro;
+    let cancelled = false;
+    const fonts = document.fonts
+      ? Promise.all([
+          document.fonts.load('850 100px "Archivo Variable"', site.name),
+          document.fonts.load('italic 400 40px "Instrument Serif"', "Building apps"),
+          document.fonts.load('400 14px "JetBrains Mono Variable"', "Kolkata"),
+        ]).catch(() => {})
+      : Promise.resolve();
+    Promise.race([fonts, new Promise((r) => setTimeout(r, 3000))]).then(() => {
+      if (cancelled) return;
+      fit();
+      document.documentElement.classList.remove("fonts-pending");
+      ro = new ResizeObserver(fit);
+      ro.observe(root.current);
+    });
+    return () => {
+      cancelled = true;
+      ro?.disconnect();
+    };
   }, []);
 
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
       const chars = SplitText.create(q("[data-word]"), { type: "chars", aria: "none" }).chars;
-      const words = SplitText.create(q("[data-statement]"), { type: "words", wordsClass: "st-word", mask: "words" }).words;
+      const words = SplitText.create(q("[data-statement]"), { type: "words", wordsClass: "st-word", mask: "words", aria: "none" }).words;
       const mm = gsap.matchMedia();
 
       mm.add(MOTION, () => {
@@ -51,8 +70,8 @@ export default function Hero() {
             .from(chars, { yPercent: 118, duration: 1.5, stagger: 0.05, ease: "expo.out" })
             .from(q("[data-meta]"), { y: 18, autoAlpha: 0, duration: 1, stagger: 0.07, ease: "power3.out" }, 0.25)
             .from(words, { yPercent: 118, duration: 1.2, stagger: 0.035, ease: "expo.out" }, 0.3)
-            .from(q("[data-card]"), { scale: 0.5, rotation: -30, autoAlpha: 0, duration: 1.5, ease: "expo.out" }, 0.45)
-            .from(q("[data-tape]"), { scaleX: 0, duration: 0.7, ease: "power3.out" }, 1.1);
+            .from(q("[data-sun]"), { scale: 0, duration: 1.6, ease: "expo.out" }, 0.3)
+            .from(q("[data-face]"), { yPercent: 18, autoAlpha: 0, duration: 1.6, ease: "expo.out" }, 0.45);
         }
 
         // Scrolling away: the letters drift up at slightly different speeds and fade.
@@ -66,7 +85,7 @@ export default function Hero() {
           .to(name.current, { autoAlpha: 0.15, ease: "power1.in" }, 0)
           .to(q("[data-statement]"), { y: () => -window.innerHeight * 0.25, autoAlpha: 0, ease: "none" }, 0)
           .to(q("[data-meta-row]"), { y: -60, autoAlpha: 0, ease: "none" }, 0)
-          .to(q("[data-card-wrap]"), { y: () => -window.innerHeight * 0.45, rotation: 10, ease: "none" }, 0);
+          .to(q("[data-avatar-wrap]"), { y: () => -window.innerHeight * 0.18, ease: "none" }, 0);
 
         if (!finePointer()) return;
 
@@ -86,23 +105,9 @@ export default function Hero() {
         h1.addEventListener("pointermove", move);
         h1.addEventListener("pointerleave", leave);
 
-        // The polaroid can be picked up and dropped anywhere in the hero.
-        const card = q("[data-card]")[0];
-        const [drag] = Draggable.create(q("[data-drag]"), {
-          type: "x,y",
-          bounds: root.current,
-          zIndexBoost: false,
-          onPress: () => gsap.to(card, { scale: 1.05, rotation: 0, duration: 0.4, ease: "power3.out" }),
-          onDrag() {
-            gsap.to(card, { rotation: gsap.utils.clamp(-18, 18, this.deltaX * 1.4), duration: 0.5, ease: "power3.out" });
-          },
-          onRelease: () => gsap.to(card, { scale: 1, rotation: -6, duration: 1.2, ease: "elastic.out(1, 0.4)" }),
-        });
-
         return () => {
           h1.removeEventListener("pointermove", move);
           h1.removeEventListener("pointerleave", leave);
-          drag.kill();
         };
       });
     },
@@ -142,55 +147,20 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative flex min-h-0 items-center px-5 md:px-10">
+      <div className="relative flex min-h-0 items-start px-5 pt-4 sm:items-center sm:pt-0 md:px-10">
         <p
           data-statement
-          className="serif max-w-[11ch] text-[clamp(2.1rem,min(6.4vw,6.2svh),3.4rem)] leading-[0.98] sm:max-w-[17ch] sm:text-[clamp(2.2rem,min(5.2vw,7.4svh),6rem)]"
+          className="serif relative z-10 max-w-[11ch] text-[clamp(2.1rem,min(6.4vw,6.2svh),3.4rem)] leading-[0.98] sm:max-w-[13ch] sm:text-[clamp(2.2rem,min(4.6vw,7.4svh),5.6rem)] lg:max-w-[16ch]"
         >
           Building apps, cloud & communities — from zero to one.
         </p>
 
+        {/* The cartoon me: eyes follow your cursor. Shoulders tuck in behind the giant name. */}
         <div
-          data-card-wrap
-          className="absolute top-2 right-5 w-[clamp(112px,30vw,160px)] sm:top-1/2 sm:right-[7vw] sm:w-[clamp(150px,min(18vw,27svh),280px)] sm:-translate-y-1/2"
+          data-avatar-wrap
+          className="absolute right-[-8%] bottom-[-16%] aspect-[1128/1146] h-[84%] sm:right-[3vw] sm:bottom-[-34%] sm:h-[128%]"
         >
-          <div data-drag>
-            <figure
-              data-card
-              className="relative bg-bone p-2 pb-7 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)] md:p-2.5 md:pb-9"
-              style={{ transform: "rotate(-6deg)" }}
-            >
-              <picture>
-                <source
-                  type="image/webp"
-                  srcSet="/img/apurba-das-480.webp 480w, /img/apurba-das-720.webp 720w"
-                  sizes="(min-width: 640px) 20vw, 32vw"
-                />
-                <img
-                  src="/img/apurba-das-480.jpg"
-                  srcSet="/img/apurba-das-480.jpg 480w, /img/apurba-das-720.jpg 720w"
-                  sizes="(min-width: 640px) 20vw, 32vw"
-                  width="480"
-                  height="600"
-                  alt="Apurba Das smiling in blue sunglasses under a clear sky"
-                  draggable="false"
-                  className="aspect-[4/5] w-full object-cover select-none"
-                />
-              </picture>
-              <figcaption className="label absolute inset-x-2 bottom-2 truncate text-[0.55rem] text-ink md:bottom-3 md:text-[0.6rem]">
-                {hero.caption.split(" — ")[0]}
-                <span className="hidden sm:inline"> — {hero.caption.split(" — ")[1]}</span>
-              </figcaption>
-              <span
-                data-tape
-                className="label absolute -top-3 left-[calc(50%-3.5rem)] grid h-7 w-28 place-items-center bg-taxi/90 text-[0.6rem] text-ink"
-                style={{ transform: "rotate(3deg)" }}
-              >
-                <span className="pointer-coarse:hidden">Drag me</span>
-                <span className="hidden pointer-coarse:inline">Hello!</span>
-              </span>
-            </figure>
-          </div>
+          <Avatar />
         </div>
       </div>
 

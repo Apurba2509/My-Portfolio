@@ -42,6 +42,20 @@
     display: none;
   }
 
+  /* Hold the hero and nav back until their fonts are ready, so nothing jumps when they swap in.
+     If the script never gets there, the animation reveals them anyway after three seconds. */
+  html.fonts-pending #top,
+  html.fonts-pending header {
+    visibility: hidden;
+    animation: reveal-anyway 0s linear 3s forwards;
+  }
+
+  @keyframes reveal-anyway {
+    to {
+      visibility: visible;
+    }
+  }
+
   ::selection {
     background: var(--color-taxi);
     color: var(--color-ink);

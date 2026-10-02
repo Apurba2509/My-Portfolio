@@ -18,6 +18,9 @@ export const site = {
   region: "West Bengal",
   country: "IN",
   school: "Techno Main Salt Lake",
+  // When this portfolio first went up (the repo's first commit). Used as the profile page's
+  // dateCreated in structured data; it needs a full date and time.
+  launched: "2025-07-20T20:12:44+05:30",
   location: "Kolkata, IN",
   // Paste the codes from Google Search Console and Bing Webmaster Tools (HTML tag method):
   // only the content="…" value, e.g. googleVerification: "abc123". See SEO.md.

@@ -5,13 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Title, description, social cards and structured data come from scripts/seo.js -->
     <!--seo-->
-    <link rel="preload" as="image" href="/img/apurba-das-480.webp" type="image/webp" />
+    <link
+      rel="preload"
+      as="image"
+      href="/img/avatar/base.webp"
+      imagesrcset="/img/avatar/base-560.webp 560w, /img/avatar/base-840.webp 840w, /img/avatar/base.webp 1128w"
+      imagesizes="(min-width: 640px) 90vh, 77vw"
+      type="image/webp"
+      fetchpriority="high"
+    />
     <script>
       // Before the first paint: skip the loader for repeat visits and reduced motion,
       // otherwise hold the page still while it plays.
       try {
         var skip = sessionStorage.getItem("apurba:intro-seen") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
-        document.documentElement.classList.add(skip ? "skip-intro" : "is-loading");
+        document.documentElement.classList.add(skip ? "skip-intro" : "is-loading", "fonts-pending");
       } catch (e) {}
     </script>
     <noscript><style>[data-preloader] { display: none !important; }</style></noscript>

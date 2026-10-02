@@ -7,9 +7,24 @@ import LocalTime from "./LocalTime";
 import Magnetic from "./Magnetic";
 import SplitReveal from "./SplitReveal";
 
+// `agent` is the WebMCP description an AI agent sees for each field (see the form below).
 const FIELDS = [
-  { name: "name", label: "Your name", type: "text", placeholder: "What should I call you?", autoComplete: "name" },
-  { name: "email", label: "Your email", type: "email", placeholder: "Where can I reply?", autoComplete: "email" },
+  {
+    name: "name",
+    label: "Your name",
+    type: "text",
+    placeholder: "What should I call you?",
+    autoComplete: "name",
+    agent: "The sender's name, so Apurba knows who is writing.",
+  },
+  {
+    name: "email",
+    label: "Your email",
+    type: "email",
+    placeholder: "Where can I reply?",
+    autoComplete: "email",
+    agent: "The sender's email address, where Apurba will reply.",
+  },
 ];
 
 const STATUS = {
@@ -19,18 +34,18 @@ const STATUS = {
   invalid: "Please fill in your name, a valid email and a message.",
 };
 
+// The form is also a WebMCP tool (developer.chrome.com/docs/ai/webmcp): an AI agent helping a
+// visitor can fill it in, but there is deliberately no toolautosubmit, so a person still clicks
+// Send. Values are read from the form itself because an agent fills the fields directly.
 function ContactForm() {
-  const [form, setForm] = useState({ name: "", email: "", message: "", company: "" });
   const [status, setStatus] = useState("idle");
 
-  const update = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (form.company) return; // Bots fill the hidden field; people never see it.
-    if (!form.name.trim() || !form.message.trim() || !e.currentTarget.checkValidity()) {
+  const send = async (form) => {
+    const data = Object.fromEntries(new FormData(form));
+    if (data.company) return "Not sent."; // Bots fill the hidden field; people never see it.
+    if (!data.name?.trim() || !data.message?.trim() || !form.checkValidity()) {
       setStatus("invalid");
-      return;
+      throw new Error(STATUS.invalid);
     }
     setStatus("sending");
     try {
@@ -39,28 +54,46 @@ function ContactForm() {
         emailjs.serviceId,
         emailjs.templateId,
         {
-          from_name: form.name,
+          from_name: data.name,
           to_name: site.first,
-          from_email: form.email,
-          reply_to: form.email,
+          from_email: data.email,
+          reply_to: data.email,
           to_email: site.email,
-          message: form.message,
+          message: data.message,
         },
         { publicKey: emailjs.publicKey }
       );
       setStatus("sent");
-      setForm({ name: "", email: "", message: "", company: "" });
+      form.reset();
+      return `Message sent to ${site.name}. ${STATUS.sent}`;
     } catch (err) {
       console.error(err);
       setStatus("error");
+      throw new Error(STATUS.error, { cause: err });
     }
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    const result = send(e.currentTarget);
+    const native = e.nativeEvent;
+    // Tell an agent how it went; for everyone else the status line below says it.
+    if (native.agentInvoked && typeof native.respondWith === "function") native.respondWith(result);
+    else result.catch(() => {});
   };
 
   const input =
     "w-full border-b-2 border-ink/25 bg-transparent py-3 text-[clamp(1.15rem,1.6vw,1.5rem)] outline-none transition-colors placeholder:text-ink/40 focus:border-ink focus-visible:outline-none";
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-8" aria-describedby="form-status">
+    <form
+      onSubmit={submit}
+      noValidate
+      className="flex flex-col gap-8"
+      aria-describedby="form-status"
+      toolname="send_message_to_apurba"
+      tooldescription={`Send a message to ${site.name}, a full-stack and mobile developer in Kolkata, about internships, collaborations, projects, hackathon teams or questions. The visitor reviews the message and presses Send.`}
+    >
       {FIELDS.map((f, i) => (
         <label key={f.name} className="block">
           <span className="label">
@@ -70,10 +103,9 @@ function ContactForm() {
             name={f.name}
             type={f.type}
             required
-            value={form[f.name]}
-            onChange={update}
             placeholder={f.placeholder}
             autoComplete={f.autoComplete}
+            toolparamdescription={f.agent}
             className={input}
           />
         </label>
@@ -84,15 +116,14 @@ function ContactForm() {
           name="message"
           required
           rows={4}
-          value={form.message}
-          onChange={update}
           placeholder="An idea, a project, a hackathon team…"
+          toolparamdescription="What the sender wants to say to Apurba: the opportunity, project or question."
           className={`${input} resize-none`}
         />
       </label>
       <label className="absolute -left-[9999px]" aria-hidden="true">
         Company
-        <input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={update} />
+        <input name="company" tabIndex={-1} autoComplete="off" />
       </label>
 
       <div className="flex flex-wrap items-center gap-6">

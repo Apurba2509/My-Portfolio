@@ -7,7 +7,8 @@ import { about, faq, journey, moreWork, projects, site, socials, stack } from ".
 const url = `${site.url}/`;
 const portrait = `${site.url}/img/apurba-das-720.jpg`;
 const ogImage = `${site.url}/og.jpg`;
-const today = () => new Date().toISOString().slice(0, 10);
+// Google's Profile page format wants full ISO 8601 date-times (date, time and zone), not bare dates.
+const now = () => new Date().toISOString();
 const plain = (text) => text.replace(/\*/g, "");
 
 const escapeAttr = (value) => String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
@@ -43,7 +44,8 @@ function structuredData() {
         isPartOf: { "@id": id("website") },
         mainEntity: { "@id": id("person") },
         primaryImageOfPage: { "@id": id("portrait") },
-        dateModified: today(),
+        dateCreated: site.launched,
+        dateModified: now(),
       },
       {
         "@type": "Person",
@@ -95,7 +97,6 @@ function structuredData() {
             url: p.links ? (live(p) ?? source(p)) : p.href,
             codeRepository: p.links ? source(p) : p.href.includes("github.com") ? p.href : undefined,
             programmingLanguage: p.stack,
-            dateCreated: p.year,
             author: { "@id": id("person") },
           },
         })),
@@ -191,9 +192,12 @@ function sitemap() {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>${url}</loc>
-    <lastmod>${today()}</lastmod>
+    <lastmod>${now()}</lastmod>
     <image:image>
       <image:loc>${portrait}</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>${site.url}/img/avatar/base.webp</image:loc>
     </image:image>
   </url>
 </urlset>

@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { ScrollTrigger, reducedMotion } from "./lib/gsap";
 import { getLenis, startSmoothScroll } from "./lib/smooth";
 import { ReadyContext } from "./lib/ready";
+import { registerAgentTools } from "./lib/agent-tools";
 import Preloader from "./components/Preloader";
 import { GridOverlay, ScrollProgress } from "./components/Chrome";
 import Nav from "./components/Nav";
@@ -37,6 +38,9 @@ export default function App() {
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     return stop;
   }, []);
+
+  // Let AI agents in the browser ask for facts about Apurba directly (WebMCP).
+  useEffect(() => registerAgentTools(), []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("is-loading", !ready);

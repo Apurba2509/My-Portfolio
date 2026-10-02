@@ -2,10 +2,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
-import { Draggable } from "gsap/Draggable";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, Draggable, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, useGSAP);
 
 // Always start at the top: the intro and the scroll scenes are built from there. ScrollTrigger keeps
 // its own copy of this setting and restores it after every refresh, so it has to be set through it.
@@ -13,7 +12,7 @@ if (typeof window !== "undefined") ScrollTrigger.clearScrollMemory("manual");
 
 gsap.defaults({ ease: "expo.out", duration: 1 });
 
-export { gsap, ScrollTrigger, SplitText, Draggable, useGSAP };
+export { gsap, ScrollTrigger, SplitText, useGSAP };
 
 // Media queries used with gsap.matchMedia() across components.
 export const MOTION = "(prefers-reduced-motion: no-preference)";

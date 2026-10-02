@@ -25,11 +25,19 @@ const indexPath = path.join(dist, "index.html");
 const template = readFileSync(indexPath, "utf8");
 if (!template.includes('<div id="root"></div>')) throw new Error("dist/index.html has no empty #root to fill");
 
-const page = template
+// Inline the stylesheet: one page, one round trip, and nothing blocking the first render.
+const cssLink = template.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/);
+const css = cssLink ? readFileSync(path.join(dist, cssLink[1]), "utf8").replace(/<\/style/gi, "<\\/style") : null;
+
+let page = template
   .replace("</title>", `</title>\n    ${fonts}`)
-  .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+  .replace('<div id="root"></div>', () => `<div id="root">${appHtml}</div>`);
+if (cssLink) page = page.replace(cssLink[0], () => `<style>${css}</style>`);
 
 writeFileSync(indexPath, page);
 rmSync(ssrDir, { recursive: true, force: true });
 
-console.log(`Prerendered dist/index.html (${Math.round(appHtml.length / 1024)} KB of HTML, ${fonts ? "fonts preloaded" : "no fonts found"})`);
+console.log(
+  `Prerendered dist/index.html (${Math.round(appHtml.length / 1024)} KB of HTML, ` +
+    `${fonts ? "fonts preloaded" : "no fonts found"}, ${css ? "CSS inlined" : "CSS left linked"})`
+);
